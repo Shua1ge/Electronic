@@ -1,5 +1,7 @@
 # 电力通信工程图纸结构化抽取原型
 
+> **Ubuntu / NVIDIA CUDA 光缆路由图 Fast v0.3 实验入口**：运行 `scripts/fast_cable_route.py`，支持圆形站点、PDF 直连矢量线段、`--node-names qwen` 局部站名识别及冲突核对，生成 `review-with-nodes.html` 和候选 Excel。详见 [Ubuntu Fast 使用说明](docs/fast-cable-route-ubuntu.md)。本功能不覆盖下文 macOS Audit 主链路，也不自动确认工程事实。
+
 **本地离线 · 证据可追溯 · 候选抽取 + 人工复核**
 
 本仓库是一个面向电力通信工程图纸的本地抽取原型：把 PDF 图纸读成五类业务表的候选行，并为每个候选值保留 OCR 原文、页面坐标和几何依据。它不是无人化交付系统；输出是候选记录，不是已确认的业务事实。
