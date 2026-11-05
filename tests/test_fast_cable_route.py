@@ -12,7 +12,7 @@ spec.loader.exec_module(m)
 
 class FastCableTests(unittest.TestCase):
     def test_parse_fenced_json(self):
-        value, error = m.parse_reply('\\`\\`\\`json\\n{"光缆连接":[],"待核对项":[]}\\n\\`\\`\\`'.replace('\\\\', ''))
+        value, error = m.parse_reply('```json\n{"光缆连接":[],"待核对项":[]}\n```')
         self.assertIsNone(error)
         self.assertEqual(value["光缆连接"], [])
 
