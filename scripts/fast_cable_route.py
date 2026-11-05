@@ -23,7 +23,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-VERSION = "fast-cable-route-0.1"
+VERSION = "fast-cable-route-0.2"
 MODEL_DEFAULT = "Qwen/Qwen3.5-2B"
 PROMPT = """你正在读取电力通信工程《光缆路由图》的一块局部图像。
 只提取两个站点都在本块图内、可以沿可见线条追踪至圆形端点的直接光缆。不要连接跨越图块边界的线路。
@@ -37,6 +37,7 @@ PROMPT = """你正在读取电力通信工程《光缆路由图》的一块局�
 HEADERS = [
     "候选ID", "页码", "起点", "终点", "光缆类型", "芯数", "长度(km)", "回路数",
     "建设状态", "核对状态", "证据检查", "疑点/原因", "OCR支持", "来源切片", "人工备注",
+    "几何检查", "圆形端点ID", "几何路径ID",
 ]
 STATUSES = ("待核对", "已确认", "已纠正", "拒绝")
 
@@ -313,7 +314,7 @@ def candidate_from_model(raw: dict[str, Any], page: int, tile_id: str, ocr_lines
         notes.append("OCR未独立核实终点名称")
     if not ev["芯数"] or not ev["长度"]:
         notes.append("芯数或长度未获得独立文字证据")
-    notes.append("连线端点及参数归属尚未通过独立几何核验")
+    notes.append("连线几何与光缆参数归属需分别核对")
     return {
         "id": f"C{number:04d}", "page": page, "tile_id": tile_id,
         "start": start, "end": end, "cable_type": typ, "cores": cores,
@@ -362,7 +363,10 @@ def tabular(rows: list[dict[str, Any]]) -> list[list[Any]]:
                        c["cores"], c["length_km"], c["circuits"], c["construction"],
                        c["status"], c["evidence_check"], "；".join(c["blockers"] + c["notes"]),
                        "; ".join(f"{k}: {','.join(v)}" for k, v in c["ocr_ids"].items() if v),
-                       f"tiles/{c['tile_id']}.png", ""])
+                       f"tiles/{c['tile_id']}.png", "",
+                       c.get("geometry_check", {}).get("state", "未执行"),
+                       ",".join(c.get("geometry_check", {}).get("nodes", [])),
+                       c.get("geometry_check", {}).get("edge_id") or ""])
     return output
 
 
@@ -394,6 +398,8 @@ def export_xlsx(out: Path, rows: list[dict[str, Any]], ocr: dict[str, Any], mani
     info.append(["说明", "所有未被人工签认的连接均为待核对；OCR字面命中不证明连线归属。"])
     info.append(["复核方式", "在光缆候选页编辑字段及核对状态；请勿覆盖原始OCR和调用记录。"])
     info.append(["OCR警告", "；".join(ocr["warnings"])[:1000]])
+    info.append(["几何核验", "仅检测PDF中清晰圆形站点的直接矢量线段；未检出不等于不存在；参数归属仍需人工核对。"] )
+    info.append(["站点映射", "在geometry/station_anchors.csv的确认站名列填写站点，下一次使用--station-map重新处理；仅人工填写的名称用于几何端点匹配。"] )
     info.column_dimensions["A"].width = 25
     info.column_dimensions["B"].width = 88
     info["A1"].font = Font(bold=True, size=16, color="17365D")
@@ -405,11 +411,11 @@ def export_xlsx(out: Path, rows: list[dict[str, Any]], ocr: dict[str, Any], mani
     ws.append(HEADERS)
     for values in tabular(rows):
         ws.append([_xlsx_safe(v) for v in values])
-    widths = [13, 9, 22, 22, 15, 9, 14, 11, 18, 14, 28, 65, 48, 35, 36]
+    widths = [13, 9, 22, 22, 15, 9, 14, 11, 18, 14, 28, 65, 48, 35, 36, 42, 24, 16]
     for j, width in enumerate(widths, 1):
         ws.column_dimensions[get_column_letter(j)].width = width
     ws.freeze_panes = "C2"
-    ws.auto_filter.ref = f"A1:O{max(2,ws.max_row)}"
+    ws.auto_filter.ref = f"A1:R{max(2,ws.max_row)}"
     ws.row_dimensions[1].height = 30
     ws.sheet_view.zoomScale = 85
     for cell in ws[1]:
@@ -457,20 +463,24 @@ def export_html(out: Path, rows: list[dict[str, Any]], manifest: dict[str, Any])
             "th{background:#e9f0f9}img{max-width:100%;border:1px solid #aaa}summary{cursor:pointer}"
             ".warn{color:#a35400}.bad{color:#b42318}</style></head><body>",
             "<h1>光缆路由图 Fast 候选复核</h1>",
-            "<p class='warn'>本页面只显示模型候选，所有连接关系尚未独立几何核验，不能作为已签认数据。</p>",
+            "<p class='warn'>仅有直接矢量线段的保守几何候选；不核实光缆属性/标签归属，缺线不证明断开，所有记录仍待人工确认。</p>",
             f"<p>文件：{html.escape(manifest['pdf_name'])}；候选 {len(rows)} 条。"
-            "<a href='structured.xlsx'>编辑候选 Excel</a> · <a href='candidates.json'>原始候选 JSON</a> · <a href='ocr.json'>OCR</a></p>",
-            "<table><thead><tr><th>候选</th><th>端点</th><th>光缆</th><th>状态 / 提示</th><th>证据图</th></tr></thead><tbody>"]
+            "<a href='structured.xlsx'>编辑候选 Excel</a> · <a href='candidates.json'>原始候选 JSON</a> · <a href='ocr.json'>OCR</a> · "
+            "<a href='geometry/station_anchors.csv'>圆形站点标注CSV</a> · <a href='geometry/geometry.json'>几何数据</a></p>",
+            "<table><thead><tr><th>候选</th><th>端点</th><th>光缆</th><th>几何核验</th><th>状态 / 提示</th><th>证据图</th></tr></thead><tbody>"]
     for c in rows:
         img = f"tiles/{c['tile_id']}.png"
         attributes = f"{c['cable_type'] or '未知'} / {c['cores'] if c['cores'] is not None else '?'}芯 / {c['length_km'] if c['length_km'] is not None else '?'}km"
         reasons = "；".join(c["blockers"] + c["notes"])
         body.append("<tr><td>" + html.escape(c["id"]) + "</td><td>" +
                     html.escape(f"{c['start'] or '?'} → {c['end'] or '?'}") +
-                    "</td><td>" + html.escape(attributes) + "</td><td class='warn'>" +
+                    "</td><td>" + html.escape(attributes) + "</td><td>" + html.escape(c.get("geometry_check", {}).get("state", "未执行")) + "</td><td class='warn'>" +
                     html.escape(c["status"] + "；" + reasons) + "</td><td><a href='" + html.escape(img, quote=True) +
                     "' target='_blank'>打开局部图</a></td></tr>")
-    body += ["</tbody></table><h2>核对说明</h2><p>点击局部图后核对原始端点和标注；在 Excel 中人工更正并设置核对状态。",
+    body += ["</tbody></table><h2>圆形站点与直连矢量线段</h2>",
+             "<p>蓝橙色圈为检测节点，绿色线为直接矢量线段；不是人工签认的光缆路由。",
+             "<a href='geometry/page001_overlay.png' target='_blank'>打开第一页几何叠加图</a>；多页请在geometry目录查看。</p>",
+             "<h2>核对说明</h2><p>点击局部图后核对原始端点和标注；在 Excel 中人工更正并设置核对状态。",
              "不要仅凭 OCR 字面匹配认定真实拓扑；Excel 修改不会自动覆盖 candidates.json。</p></body></html>"]
     (out / "review.html").write_text("\n".join(body), encoding="utf-8")
 
@@ -490,6 +500,12 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument("--render-long-edge", type=int, default=3600)
     parser.add_argument("--max-new-tokens", type=int, default=640)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--geometry", choices=["auto", "off"], default="auto",
+                        help="圆形站点与直接矢量线段核验，默认启用")
+    parser.add_argument("--station-map", type=Path,
+                        help="填写过的geometry/station_anchors.csv，映射人工确认站名到节点")
+    parser.add_argument("--geometry-only", action="store_true",
+                        help="只生成几何叠加图、站点节点映射与空的复核工作簿，不加载Qwen")
     return parser
 
 
@@ -511,21 +527,31 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     out.mkdir(parents=True)
     tiles = crop_pdf(pdf, out, args.cols, args.rows, args.overlap, args.render_long_edge)
     ocr = collect_ocr(pdf, out, tiles, args.ocr, args.ocr_lang)
+    geometry = None
+    if args.geometry == "auto":
+        from cable_route_geometry import build_geometry
+        geometry = build_geometry(pdf, out, ocr, args.station_map)
+        print("几何：", sum(len(p["nodes"]) for p in geometry["pages"]),
+              "个圆形站点候选；", sum(len(p["edges"]) for p in geometry["pages"]),
+              "条直接矢量线段候选", flush=True)
+    elif args.station_map:
+        raise ValueError("--station-map 需要启用 --geometry auto")
     manifest = {"version": VERSION, "pdf_name": pdf.name, "pdf_sha256": sha256(pdf),
+                "geometry_enabled": bool(geometry),
                 "model": args.model_id if not args.responses_dir else "recorded-responses (no inference)",
-                "generation_mode": "replay" if args.responses_dir else "cuda-4bit",
+                "generation_mode": "geometry-only" if args.geometry_only else ("replay" if args.responses_dir else "cuda-4bit"),
                 "tile_count": len(tiles), "ocr_mode": args.ocr,
                 "note": "所有非拒绝候选均待人工核对；OCR文字存在不构成连接关系证据"}
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     (out / "tiles.json").write_text(json.dumps(tiles, ensure_ascii=False, indent=2), encoding="utf-8")
     calls = out / "calls"
     calls.mkdir()
-    # GPU loaded once only after rendering / OCR completes.
-    engine = None if args.responses_dir else CudaQwen(args.model_id, args.online, args.max_new_tokens, args.seed)
+    # GPU loaded once only after rendering / OCR / geometry completes.
+    engine = None if (args.responses_dir or args.geometry_only) else CudaQwen(args.model_id, args.online, args.max_new_tokens, args.seed)
     original: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
-    for idx, t in enumerate(tiles):
+    for idx, t in enumerate([] if args.geometry_only else tiles):
         print(f"[{idx + 1}/{len(tiles)}] {t['id']}", flush=True)
         try:
             result = load_recorded_reply(args.responses_dir, t["id"]) if args.responses_dir else engine.infer(out / t["image"], idx)
@@ -559,9 +585,18 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                                              ocr["pages"].get(str(t["page"]), []), len(rows) + 1))
     rows = deduplicate(rows)
     crosscheck_parallel(rows)
+    if geometry is not None:
+        from cable_route_geometry import check_candidate
+        for record in rows:
+            verdict = check_candidate(record, geometry)
+            record["geometry_check"] = verdict
+            if verdict["state"].startswith("未检出"):
+                record["notes"].append("几何未找到直接路径；折线或遮挡可能漏检，请优先复核")
+            # Never treat a detected line as proof that its cable properties match.
     for i, row in enumerate(rows, 1):
         row["id"] = f"C{i:04d}"
     report = {"manifest": manifest, "records": rows, "unresolved": unresolved, "raw_model_replies": original,
+              "geometry": {"enabled": bool(geometry), "station_map": bool(args.station_map)},
               "warning": "OCR 仅核对字面，不核验站点之间是否真正连通，全部记录需要人工核对"}
     (out / "candidates.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     with (out / "review.csv").open("w", encoding="utf-8-sig", newline="") as fd:
