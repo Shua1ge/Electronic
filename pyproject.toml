@@ -1,0 +1,14 @@
+[project]
+name = "telecom-drawing"
+version = "0.1.0"
+description = "Local telecom drawing parsing and vision extraction on Apple Silicon"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "mlx-vlm", "huggingface-hub", "pymupdf", "ezdxf",
+  "opencv-python", "pillow", "pytesseract",
+  "networkx", "shapely", "pydantic", "openpyxl",
+]
+
+[tool.uv]
+python-downloads = "never"
+environments = ["sys_platform == 'darwin' and platform_machine == 'arm64'"]

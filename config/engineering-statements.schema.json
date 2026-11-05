@@ -1,0 +1,413 @@
+{
+  "$defs": {
+    "Entity": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "granularity": {
+          "default": "instance_candidate",
+          "enum": [
+            "instance_candidate",
+            "class_reference",
+            "group_reference",
+            "expression"
+          ],
+          "title": "Granularity",
+          "type": "string"
+        },
+        "verified_identity": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Verified Identity",
+          "type": "object"
+        },
+        "identity_verified_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Identity Verified By"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label",
+        "scope",
+        "evidence_ids"
+      ],
+      "title": "Entity",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "document_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Document Sha256",
+          "type": "string"
+        },
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "bbox": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Bbox",
+          "type": "array"
+        },
+        "coordinate_space": {
+          "default": "normalized_page",
+          "enum": [
+            "normalized_page",
+            "normalized_oriented_page"
+          ],
+          "title": "Coordinate Space",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "quote": {
+          "minLength": 1,
+          "title": "Quote",
+          "type": "string"
+        },
+        "reading_method": {
+          "enum": [
+            "native_text",
+            "ocr",
+            "visual_review",
+            "model"
+          ],
+          "title": "Reading Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "file",
+        "document_sha256",
+        "page",
+        "bbox",
+        "source_ids",
+        "quote",
+        "reading_method"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Scope": {
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "minLength": 1,
+          "title": "Project",
+          "type": "string"
+        },
+        "work_package": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Work Package"
+        },
+        "engineering_phase": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Engineering Phase"
+        },
+        "stage": {
+          "default": "unknown",
+          "enum": [
+            "existing",
+            "construction",
+            "target",
+            "unknown"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "temporality": {
+          "default": "unknown",
+          "enum": [
+            "permanent",
+            "temporary",
+            "unknown"
+          ],
+          "title": "Temporality",
+          "type": "string"
+        },
+        "document_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Document Revision"
+        },
+        "state_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State Time"
+        }
+      },
+      "required": [
+        "project"
+      ],
+      "title": "Scope",
+      "type": "object"
+    },
+    "Statement": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "predicate": {
+          "title": "Predicate",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "attribute",
+            "relation"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "object": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Object"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "qualifiers": {
+          "additionalProperties": true,
+          "title": "Qualifiers",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "mode": {
+          "default": "asserted_fact",
+          "enum": [
+            "asserted_fact",
+            "requirement",
+            "expectation",
+            "derived"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "status": {
+          "default": "candidate",
+          "enum": [
+            "candidate",
+            "corroborated",
+            "conflicted",
+            "rejected",
+            "human_confirmed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "premise_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Premise Ids",
+          "type": "array"
+        },
+        "rule_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rule Id"
+        },
+        "adjudicator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adjudicator"
+        }
+      },
+      "required": [
+        "id",
+        "subject",
+        "predicate",
+        "kind",
+        "scope",
+        "evidence_ids"
+      ],
+      "title": "Statement",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ontology_version": {
+      "const": "0.3.0",
+      "default": "0.3.0",
+      "title": "Ontology Version",
+      "type": "string"
+    },
+    "producer": {
+      "title": "Producer",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "entities": {
+      "items": {
+        "$ref": "#/$defs/Entity"
+      },
+      "title": "Entities",
+      "type": "array"
+    },
+    "statements": {
+      "items": {
+        "$ref": "#/$defs/Statement"
+      },
+      "title": "Statements",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "producer",
+    "evidence",
+    "entities",
+    "statements"
+  ],
+  "title": "Bundle",
+  "type": "object"
+}

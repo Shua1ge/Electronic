@@ -1,0 +1,10 @@
+{
+  "name": "ODAFileConverter",
+  "version": "27.10.0.0",
+  "architecture": "arm64",
+  "official_source": "https://www.opendesign.com/guestfiles/oda_file_converter",
+  "dmg_sha256": "ae694b8292a7c9de3a3257950a8e29d5be91251edcec125885c586929119a849",
+  "codesign_verified": true,
+  "gatekeeper_assessment": "accepted: Notarized Developer ID",
+  "installed_path": "tools/oda/ODAFileConverter.app"
+}

@@ -1,0 +1,12 @@
+#!/bin/zsh
+# Always use this project's venv, with model downloads disabled during inference.
+set -eu
+PROJECT_DIR="${0:A:h:h}"
+export HF_HOME="$PROJECT_DIR/.cache/huggingface"
+export XDG_CACHE_HOME="$PROJECT_DIR/.cache"
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+export HF_HUB_DISABLE_TELEMETRY=1
+export DO_NOT_TRACK=1
+export TOKENIZERS_PARALLELISM=false
+exec "$PROJECT_DIR/.venv/bin/python" "$@"

@@ -1,0 +1,5 @@
+brew "python@3.13"
+brew "uv"
+brew "poppler"
+brew "tesseract"
+brew "tesseract-lang"

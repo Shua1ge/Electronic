@@ -1,0 +1,1364 @@
+{
+  "version": "0.3.0",
+  "status": "sample_grounded_extensible_schema_not_industry_standard",
+  "classes": {
+    "EngineeringObject": {
+      "label": "工程对象",
+      "parent": null,
+      "layer": "core",
+      "identity_evidence": [],
+      "notes": "抽象父类；不是图纸上的一次表达"
+    },
+    "Project": {
+      "label": "工程项目",
+      "parent": "EngineeringObject",
+      "layer": "context",
+      "identity_evidence": [
+        "project_code"
+      ],
+      "notes": ""
+    },
+    "WorkPackage": {
+      "label": "责任范围/配套工程",
+      "parent": "EngineeringObject",
+      "layer": "context",
+      "identity_evidence": [
+        "project",
+        "package_code"
+      ],
+      "notes": ""
+    },
+    "Organization": {
+      "label": "业务机构",
+      "parent": "EngineeringObject",
+      "layer": "context",
+      "identity_evidence": [
+        "jurisdiction",
+        "business_role",
+        "official_identifier"
+      ],
+      "notes": ""
+    },
+    "Site": {
+      "label": "站点",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "project_scope",
+        "site_identifier"
+      ],
+      "notes": ""
+    },
+    "Building": {
+      "label": "建筑",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "site",
+        "building_identifier"
+      ],
+      "notes": ""
+    },
+    "Room": {
+      "label": "房间",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "building",
+        "room_number"
+      ],
+      "notes": ""
+    },
+    "Rack": {
+      "label": "机柜/屏柜",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "room",
+        "rack_number"
+      ],
+      "notes": ""
+    },
+    "Slot": {
+      "label": "机架槽位",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "device_or_rack",
+        "slot_number"
+      ],
+      "notes": ""
+    },
+    "EquipmentModel": {
+      "label": "设备型号规格",
+      "parent": "EngineeringObject",
+      "layer": "catalog",
+      "identity_evidence": [
+        "manufacturer",
+        "model_exact",
+        "variant"
+      ],
+      "notes": ""
+    },
+    "Device": {
+      "label": "设备实例",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "asset_id_or_verified_local_instance",
+        "location",
+        "role",
+        "plane"
+      ],
+      "notes": ""
+    },
+    "Board": {
+      "label": "板卡实例",
+      "parent": "Device",
+      "layer": "physical",
+      "identity_evidence": [
+        "parent_device",
+        "slot",
+        "instance_identifier"
+      ],
+      "notes": ""
+    },
+    "Port": {
+      "label": "端口/接线端子",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "parent_device_or_board",
+        "port_identifier"
+      ],
+      "notes": ""
+    },
+    "InterfaceSpec": {
+      "label": "接口规格",
+      "parent": "EngineeringObject",
+      "layer": "catalog",
+      "identity_evidence": [
+        "standard_name",
+        "variant"
+      ],
+      "notes": ""
+    },
+    "CableSegment": {
+      "label": "物理缆段",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "cable_identifier",
+        "segment",
+        "circuit_index",
+        "end_anchors"
+      ],
+      "notes": ""
+    },
+    "FiberRange": {
+      "label": "纤芯/线对资源集合",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "cable_segment",
+        "indices_or_range"
+      ],
+      "notes": ""
+    },
+    "Splice": {
+      "label": "接续点/熔接",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "location",
+        "splice_identifier"
+      ],
+      "notes": ""
+    },
+    "PhysicalRoute": {
+      "label": "物理敷设路径",
+      "parent": "EngineeringObject",
+      "layer": "physical",
+      "identity_evidence": [
+        "ordered_segments",
+        "route_identifier"
+      ],
+      "notes": ""
+    },
+    "Network": {
+      "label": "通信网络",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "administrative_scope",
+        "network_identifier"
+      ],
+      "notes": ""
+    },
+    "Plane": {
+      "label": "网络平面",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "network",
+        "plane_identifier"
+      ],
+      "notes": ""
+    },
+    "SecurityZone": {
+      "label": "安全分区",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "security_domain",
+        "zone_identifier"
+      ],
+      "notes": ""
+    },
+    "Circuit": {
+      "label": "光路/传输电路",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "network_plane",
+        "circuit_identifier",
+        "transport_endpoints"
+      ],
+      "notes": ""
+    },
+    "Service": {
+      "label": "业务服务",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "service_identifier",
+        "business_parties",
+        "service_role"
+      ],
+      "notes": ""
+    },
+    "Channel": {
+      "label": "业务通道",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "service",
+        "circuit_index",
+        "protection_set",
+        "channel_identifier",
+        "network_plane"
+      ],
+      "notes": ""
+    },
+    "SoftwareComponent": {
+      "label": "软件功能组件",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "system",
+        "component_identifier",
+        "version"
+      ],
+      "notes": ""
+    },
+    "Deployment": {
+      "label": "部署实例",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "component",
+        "host",
+        "zone",
+        "deployment_identifier"
+      ],
+      "notes": ""
+    },
+    "FunctionalRole": {
+      "label": "功能角色",
+      "parent": "EngineeringObject",
+      "layer": "catalog",
+      "identity_evidence": [
+        "role_name",
+        "system_scope"
+      ],
+      "notes": ""
+    },
+    "RedundancyGroup": {
+      "label": "冗余配置组",
+      "parent": "EngineeringObject",
+      "layer": "logical",
+      "identity_evidence": [
+        "protected_function",
+        "group_identifier",
+        "member_roles"
+      ],
+      "notes": ""
+    },
+    "PowerSystem": {
+      "label": "电源系统",
+      "parent": "EngineeringObject",
+      "layer": "power",
+      "identity_evidence": [
+        "site",
+        "system_identifier",
+        "independent_source"
+      ],
+      "notes": ""
+    },
+    "PowerCircuit": {
+      "label": "供电回路",
+      "parent": "EngineeringObject",
+      "layer": "power",
+      "identity_evidence": [
+        "power_system",
+        "circuit_identifier",
+        "breaker"
+      ],
+      "notes": ""
+    },
+    "GroundNode": {
+      "label": "接地点/接地母线",
+      "parent": "EngineeringObject",
+      "layer": "power",
+      "identity_evidence": [
+        "location",
+        "ground_identifier"
+      ],
+      "notes": ""
+    },
+    "MaterialLine": {
+      "label": "设备材料表条目",
+      "parent": "EngineeringObject",
+      "layer": "construction",
+      "identity_evidence": [
+        "document_version",
+        "table",
+        "row"
+      ],
+      "notes": ""
+    },
+    "Requirement": {
+      "label": "设计要求",
+      "parent": "EngineeringObject",
+      "layer": "construction",
+      "identity_evidence": [
+        "scope",
+        "requirement_identifier"
+      ],
+      "notes": ""
+    },
+    "WorkActivity": {
+      "label": "建设/改造动作",
+      "parent": "EngineeringObject",
+      "layer": "construction",
+      "identity_evidence": [
+        "work_package",
+        "action",
+        "target",
+        "stage"
+      ],
+      "notes": ""
+    },
+    "QuantityExpectation": {
+      "label": "数量期望",
+      "parent": "EngineeringObject",
+      "layer": "construction",
+      "identity_evidence": [
+        "scope",
+        "target_description",
+        "count_basis",
+        "unit"
+      ],
+      "notes": ""
+    },
+    "DrawingOccurrence": {
+      "label": "图纸表达",
+      "parent": null,
+      "layer": "evidence",
+      "identity_evidence": [
+        "document_sha256",
+        "page",
+        "local_geometry_or_text_id"
+      ],
+      "notes": ""
+    }
+  },
+  "relations": {
+    "located_in": {
+      "label": "安装/位于",
+      "domains": [
+        "Site",
+        "Building",
+        "Room",
+        "Rack",
+        "Slot",
+        "Device",
+        "Splice",
+        "GroundNode",
+        "PowerSystem"
+      ],
+      "ranges": [
+        "Site",
+        "Building",
+        "Room",
+        "Rack",
+        "Slot"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "part_of": {
+      "label": "部件属于",
+      "domains": [
+        "Board",
+        "Slot",
+        "Port",
+        "Rack",
+        "FiberRange"
+      ],
+      "ranges": [
+        "Device",
+        "Rack",
+        "Board",
+        "CableSegment",
+        "Room"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "instance_of": {
+      "label": "采用型号",
+      "domains": [
+        "Device"
+      ],
+      "ranges": [
+        "EquipmentModel"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "has_interface": {
+      "label": "接口规格",
+      "domains": [
+        "Port"
+      ],
+      "ranges": [
+        "InterfaceSpec"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "performs_role": {
+      "label": "承担角色",
+      "domains": [
+        "Device",
+        "Deployment"
+      ],
+      "ranges": [
+        "FunctionalRole"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "participates_in": {
+      "label": "参与网络",
+      "domains": [
+        "Device",
+        "Circuit",
+        "Channel"
+      ],
+      "ranges": [
+        "Network",
+        "Plane"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "plane_of": {
+      "label": "网络的平面",
+      "domains": [
+        "Plane"
+      ],
+      "ranges": [
+        "Network"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "in_security_zone": {
+      "label": "处于安全分区",
+      "domains": [
+        "Device",
+        "Deployment"
+      ],
+      "ranges": [
+        "SecurityZone"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "deployed_on": {
+      "label": "部署于",
+      "domains": [
+        "Deployment"
+      ],
+      "ranges": [
+        "Device"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "deploys": {
+      "label": "部署组件",
+      "domains": [
+        "Deployment"
+      ],
+      "ranges": [
+        "SoftwareComponent"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "managed_by": {
+      "label": "管理方",
+      "domains": [
+        "Device",
+        "Network",
+        "SoftwareComponent"
+      ],
+      "ranges": [
+        "Organization"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "physical_end": {
+      "label": "物理缆段端点",
+      "domains": [
+        "CableSegment"
+      ],
+      "ranges": [
+        "Port",
+        "Splice",
+        "Site"
+      ],
+      "qualifiers": [
+        "terminal_role"
+      ],
+      "default_status": "candidate"
+    },
+    "transport_end": {
+      "label": "传输电路端点",
+      "domains": [
+        "Circuit"
+      ],
+      "ranges": [
+        "Port",
+        "Device",
+        "Site"
+      ],
+      "qualifiers": [
+        "terminal_role"
+      ],
+      "default_status": "candidate"
+    },
+    "business_end": {
+      "label": "业务服务端点",
+      "domains": [
+        "Service",
+        "Channel"
+      ],
+      "ranges": [
+        "Organization",
+        "Site",
+        "Device",
+        "Port"
+      ],
+      "qualifiers": [
+        "terminal_role"
+      ],
+      "default_status": "candidate"
+    },
+    "traverses": {
+      "label": "经过",
+      "domains": [
+        "Circuit",
+        "Channel",
+        "PhysicalRoute"
+      ],
+      "ranges": [
+        "Site",
+        "Device",
+        "Splice",
+        "CableSegment"
+      ],
+      "qualifiers": [
+        "sequence",
+        "path_variant"
+      ],
+      "default_status": "candidate"
+    },
+    "uses_resource": {
+      "label": "使用纤芯资源",
+      "domains": [
+        "Circuit",
+        "Channel"
+      ],
+      "ranges": [
+        "FiberRange"
+      ],
+      "qualifiers": [
+        "resource_usage",
+        "direction"
+      ],
+      "default_status": "candidate"
+    },
+    "splices": {
+      "label": "接续资源",
+      "domains": [
+        "Splice"
+      ],
+      "ranges": [
+        "FiberRange",
+        "Port"
+      ],
+      "qualifiers": [
+        "side",
+        "pair_mapping"
+      ],
+      "default_status": "candidate"
+    },
+    "carried_by": {
+      "label": "承载于",
+      "domains": [
+        "Channel"
+      ],
+      "ranges": [
+        "Circuit",
+        "FiberRange",
+        "Service"
+      ],
+      "qualifiers": [
+        "dedicated_or_multiplexed"
+      ],
+      "default_status": "candidate"
+    },
+    "realized_by": {
+      "label": "业务实现",
+      "domains": [
+        "Service"
+      ],
+      "ranges": [
+        "Channel",
+        "Deployment"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "follows_route": {
+      "label": "采用物理路由",
+      "domains": [
+        "CableSegment",
+        "Circuit"
+      ],
+      "ranges": [
+        "PhysicalRoute"
+      ],
+      "qualifiers": [
+        "primary_or_backup"
+      ],
+      "default_status": "candidate"
+    },
+    "member_of": {
+      "label": "冗余组成员",
+      "domains": [
+        "Device",
+        "Deployment",
+        "Circuit",
+        "PowerSystem",
+        "PowerCircuit"
+      ],
+      "ranges": [
+        "RedundancyGroup"
+      ],
+      "qualifiers": [
+        "member_role"
+      ],
+      "default_status": "candidate"
+    },
+    "supplied_by": {
+      "label": "供电来源",
+      "domains": [
+        "Device",
+        "Rack",
+        "PowerSystem"
+      ],
+      "ranges": [
+        "PowerSystem",
+        "PowerCircuit"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "grounded_to": {
+      "label": "接地于",
+      "domains": [
+        "Device",
+        "Rack",
+        "CableSegment"
+      ],
+      "ranges": [
+        "GroundNode"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "acts_on": {
+      "label": "动作作用对象",
+      "domains": [
+        "WorkActivity"
+      ],
+      "ranges": [
+        "EngineeringObject"
+      ],
+      "qualifiers": [
+        "action",
+        "before_state",
+        "after_state"
+      ],
+      "default_status": "candidate"
+    },
+    "responsible_package": {
+      "label": "责任范围",
+      "domains": [
+        "WorkActivity",
+        "Requirement",
+        "MaterialLine"
+      ],
+      "ranges": [
+        "WorkPackage"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "describes": {
+      "label": "图中表达",
+      "domains": [
+        "DrawingOccurrence"
+      ],
+      "ranges": [
+        "EngineeringObject"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "requires": {
+      "label": "要求对象",
+      "domains": [
+        "Requirement"
+      ],
+      "ranges": [
+        "EngineeringObject"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    },
+    "expects": {
+      "label": "期望数量对象",
+      "domains": [
+        "QuantityExpectation"
+      ],
+      "ranges": [
+        "EquipmentModel",
+        "FunctionalRole",
+        "CableSegment",
+        "Channel",
+        "Device"
+      ],
+      "qualifiers": [],
+      "default_status": "candidate"
+    }
+  },
+  "attributes": {
+    "label": {
+      "label": "原文名称",
+      "domains": [
+        "EngineeringObject"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "set_or_alias",
+      "value_type": "string"
+    },
+    "identifier": {
+      "label": "作用域内编号",
+      "domains": [
+        "EngineeringObject"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "set_or_alias",
+      "value_type": "string"
+    },
+    "model_code": {
+      "label": "完整型号",
+      "domains": [
+        "EquipmentModel"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "manufacturer": {
+      "label": "制造商",
+      "domains": [
+        "EquipmentModel"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "cable_kind": {
+      "label": "光缆/电缆类型",
+      "domains": [
+        "CableSegment"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "core_count": {
+      "label": "物理缆段芯数",
+      "domains": [
+        "CableSegment"
+      ],
+      "units": [
+        "芯"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "fiber_spec": {
+      "label": "纤芯规格",
+      "domains": [
+        "CableSegment",
+        "FiberRange"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "length": {
+      "label": "长度",
+      "domains": [
+        "CableSegment",
+        "PhysicalRoute"
+      ],
+      "units": [
+        "m",
+        "km"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "fiber_indices": {
+      "label": "实际纤芯编号集合",
+      "domains": [
+        "FiberRange"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "set_or_alias",
+      "value_type": "integer_set"
+    },
+    "resource_size": {
+      "label": "资源集合芯数",
+      "domains": [
+        "FiberRange"
+      ],
+      "units": [
+        "芯"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "network_nominal_rate": {
+      "label": "网络标称速率",
+      "domains": [
+        "Network",
+        "Plane"
+      ],
+      "units": [
+        "Mbit/s",
+        "Gbit/s"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "circuit_rate": {
+      "label": "实际光路配置速率",
+      "domains": [
+        "Circuit"
+      ],
+      "units": [
+        "Mbit/s",
+        "Gbit/s"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "channel_rate": {
+      "label": "业务通道申请速率",
+      "domains": [
+        "Channel"
+      ],
+      "units": [
+        "kbit/s",
+        "Mbit/s",
+        "Gbit/s"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "rated_capacity": {
+      "label": "设备额定容量",
+      "domains": [
+        "EquipmentModel",
+        "Device"
+      ],
+      "units": [
+        "Mbit/s",
+        "Gbit/s",
+        "W",
+        "VA"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "interface_name": {
+      "label": "接口类型",
+      "domains": [
+        "InterfaceSpec"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "port_number": {
+      "label": "端口编号",
+      "domains": [
+        "Port"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "slot_number": {
+      "label": "槽位编号",
+      "domains": [
+        "Slot"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "quantity": {
+      "label": "数量",
+      "domains": [
+        "QuantityExpectation",
+        "MaterialLine"
+      ],
+      "units": [
+        "台",
+        "套",
+        "根",
+        "块",
+        "芯",
+        "路",
+        "个",
+        "m",
+        "km"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "count_basis": {
+      "label": "数量口径",
+      "domains": [
+        "QuantityExpectation",
+        "MaterialLine"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "protection_scheme": {
+      "label": "冗余/保护配置",
+      "domains": [
+        "Circuit",
+        "RedundancyGroup"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "role_counts": {
+      "label": "冗余角色数量要求",
+      "domains": [
+        "RedundancyGroup"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "role_count_map"
+    },
+    "input_voltage": {
+      "label": "输入电压",
+      "domains": [
+        "PowerSystem",
+        "PowerCircuit",
+        "Device"
+      ],
+      "units": [
+        "V",
+        "kV"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "output_voltage": {
+      "label": "输出电压",
+      "domains": [
+        "PowerSystem",
+        "PowerCircuit"
+      ],
+      "units": [
+        "V",
+        "kV"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "load_current": {
+      "label": "负荷电流",
+      "domains": [
+        "PowerSystem",
+        "PowerCircuit",
+        "Device"
+      ],
+      "units": [
+        "A"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "battery_capacity": {
+      "label": "蓄电池容量",
+      "domains": [
+        "PowerSystem",
+        "Device"
+      ],
+      "units": [
+        "Ah"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "backup_duration": {
+      "label": "后备时间",
+      "domains": [
+        "PowerSystem",
+        "Requirement"
+      ],
+      "units": [
+        "h"
+      ],
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "number"
+    },
+    "electrical_mode": {
+      "label": "交直流制式",
+      "domains": [
+        "PowerSystem",
+        "PowerCircuit"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "action": {
+      "label": "建设动作",
+      "domains": [
+        "WorkActivity"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "scalar",
+      "value_type": "string"
+    },
+    "requirement_text": {
+      "label": "要求原文",
+      "domains": [
+        "Requirement"
+      ],
+      "units": null,
+      "scope_required": true,
+      "comparison": "set_or_alias",
+      "value_type": "string"
+    }
+  },
+  "legacy_types": {
+    "站点": "Site",
+    "业务机构": "Organization",
+    "网络平面": "Plane",
+    "设备实例": "Device",
+    "端口接口": "Port",
+    "物理光缆": "CableSegment",
+    "纤芯资源": "FiberRange",
+    "光路": "Circuit",
+    "业务通道": "Channel",
+    "施工活动": "WorkActivity",
+    "图纸表达": "DrawingOccurrence"
+  },
+  "profiles": {
+    "transport": [
+      "Network",
+      "Plane",
+      "Circuit",
+      "Channel",
+      "CableSegment",
+      "FiberRange",
+      "Splice"
+    ],
+    "site_installation": [
+      "Site",
+      "Building",
+      "Room",
+      "Rack",
+      "Slot",
+      "Device",
+      "Board",
+      "Port"
+    ],
+    "ict_security": [
+      "SecurityZone",
+      "SoftwareComponent",
+      "Deployment",
+      "FunctionalRole",
+      "RedundancyGroup"
+    ],
+    "power_grounding": [
+      "PowerSystem",
+      "PowerCircuit",
+      "GroundNode"
+    ],
+    "construction": [
+      "Project",
+      "WorkPackage",
+      "WorkActivity",
+      "Requirement",
+      "MaterialLine",
+      "QuantityExpectation"
+    ],
+    "evidence": [
+      "DrawingOccurrence"
+    ]
+  },
+  "scope_dimensions": {
+    "project": "必填工程标识",
+    "work_package": "本工程/配套工程的引用，未知留空",
+    "engineering_phase": "一期/二期等，不是时间阶段",
+    "stage": [
+      "existing",
+      "construction",
+      "target",
+      "unknown"
+    ],
+    "temporality": [
+      "permanent",
+      "temporary",
+      "unknown"
+    ],
+    "document_revision": "原文版本号；不按文件名日期猜测",
+    "state_time": "明确生效时间，未知留空"
+  },
+  "assertion_modes": [
+    "asserted_fact",
+    "requirement",
+    "expectation",
+    "derived"
+  ],
+  "epistemic_states": [
+    "candidate",
+    "corroborated",
+    "conflicted",
+    "rejected",
+    "human_confirmed"
+  ],
+  "count_bases": [
+    "new_added",
+    "existing",
+    "target_total",
+    "procurement",
+    "material_quantity",
+    "resource_count",
+    "unknown"
+  ],
+  "identity_decisions": [
+    "same",
+    "different",
+    "insufficient"
+  ],
+  "rules": [
+    {
+      "id": "R01",
+      "name": "型号不等于实例",
+      "applies_when": "same_model_code",
+      "requires": "比较实例标识、角色、网络与位置；不足则待定",
+      "forbidden": "相同型号自动合并",
+      "counterexample": "同一MODEL-X分别用于密码机和认证网关"
+    },
+    {
+      "id": "R02",
+      "name": "网络不等于安全区",
+      "applies_when": "zone_or_plane_label",
+      "requires": "分开建Network/Plane/SecurityZone",
+      "forbidden": "把II区当成第二网络平面",
+      "counterexample": "生产控制II区与生产管理III区"
+    },
+    {
+      "id": "R03",
+      "name": "容量分层",
+      "applies_when": "rate_claim",
+      "requires": "按网络、设备、光路、业务属性归属后比较",
+      "forbidden": "从10G网络补成10G光路",
+      "counterexample": "10G网络承载622M光路与2M业务"
+    },
+    {
+      "id": "R04",
+      "name": "接口不等于带宽",
+      "applies_when": "interface_claim",
+      "requires": "FE归InterfaceSpec，2M归Channel.channel_rate",
+      "forbidden": "从FE推断业务申请速率100M",
+      "counterexample": "2M通道（FE接口）"
+    },
+    {
+      "id": "R05",
+      "name": "数量口径分离",
+      "applies_when": "quantity_or_redundancy",
+      "requires": "分别记录新增、现有、目标总量、采购量及资源数量",
+      "forbidden": "3台新增与2主2备直接比较或补造1台已有",
+      "counterexample": "增加3台后实现2主2备"
+    },
+    {
+      "id": "R06",
+      "name": "物理缆段不等于资源路径",
+      "applies_when": "splice_or_branch",
+      "requires": "分开CableSegment/FiberRange/Splice/Circuit",
+      "forbidden": "把24芯资源通路当成24芯物理缆段",
+      "counterexample": "48芯ADSS在T接点分纤形成多个方向的24芯资源连接"
+    },
+    {
+      "id": "R07",
+      "name": "多端关系允许存在",
+      "applies_when": "multi_terminal_service",
+      "requires": "用多条带端点角色的关系描述多端业务",
+      "forbidden": "强制所有保护业务只能有A/Z两端",
+      "counterexample": "T接线路三端保护"
+    },
+    {
+      "id": "R08",
+      "name": "施工责任不是图中存在性",
+      "applies_when": "scope_exclusion",
+      "requires": "保存本工程/配套工程/未确定的责任范围",
+      "forbidden": "对侧设备出现在说明中就计入本工程量",
+      "counterexample": "对侧设备由配套工程负责"
+    },
+    {
+      "id": "R09",
+      "name": "阶段分期临时性分离",
+      "applies_when": "temporal_claim",
+      "requires": "阶段、工程分期、临时性分别标注",
+      "forbidden": "把一期二期当成现状目标；把临时直接等同施工阶段",
+      "counterexample": "一期与二期各自的新建线路"
+    },
+    {
+      "id": "R10",
+      "name": "槽位端口纤芯分别编号",
+      "applies_when": "resource_identifier",
+      "requires": "沿所属设备/光缆限定编号作用域",
+      "forbidden": "把#6槽位当成6号纤芯或端口",
+      "counterexample": "槽位#6与光缆1,2芯"
+    },
+    {
+      "id": "R11",
+      "name": "图例解释有作用域",
+      "applies_when": "legend_match",
+      "requires": "保存图例来源、页面/图组范围、歧义候选",
+      "forbidden": "把一页菱形符号含义推广所有工程",
+      "counterexample": "相似图元对应保护、稳控或测距"
+    },
+    {
+      "id": "R12",
+      "name": "未提取不是不存在",
+      "applies_when": "missing_observation",
+      "requires": "先查覆盖与来源，再产生缺项核对任务",
+      "forbidden": "以未识别为零工程量",
+      "counterexample": "浅灰线漏识"
+    },
+    {
+      "id": "R13",
+      "name": "型号文本精确保留",
+      "applies_when": "model_token",
+      "requires": "型号原文完整保存，数量另取明确数词",
+      "forbidden": "自动去掉型号开头3-或合并V2/V3",
+      "counterexample": "3-NL-Q2288HV6(V5)"
+    },
+    {
+      "id": "R14",
+      "name": "重复文档不是独立证据",
+      "applies_when": "repeated_page",
+      "requires": "按源文档/修订/页表达追踪依赖与别名",
+      "forbidden": "合订本与单张图重复计数或虚增置信度",
+      "counterexample": "组合1.pdf和单图同页"
+    },
+    {
+      "id": "R15",
+      "name": "规范要求不是竣工事实",
+      "applies_when": "modal_text",
+      "requires": "区分asserted_fact/requirement/expectation/derived",
+      "forbidden": "把应接地或应独立敷设当成已确认施工状态",
+      "counterexample": "需两条完全独立路径"
+    }
+  ],
+  "policy": {
+    "open_world": true,
+    "same_name_implies_identity": false,
+    "model_output_can_confirm": false,
+    "quantity_creates_instances": false,
+    "auto_promote_to_business_facts": false
+  }
+}

@@ -1,0 +1,5 @@
+#!/bin/zsh
+# Enforce network denial at the OS level for this process and its children.
+set -eu
+PROJECT_DIR="${0:A:h:h}"
+exec /usr/bin/sandbox-exec -f "$PROJECT_DIR/config/offline.sb" "$PROJECT_DIR/scripts/local-python" "$@"
