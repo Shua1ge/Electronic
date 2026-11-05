@@ -1,6 +1,6 @@
 # 电力通信工程图纸结构化抽取原型
 
-> **Ubuntu / NVIDIA CUDA 光缆路由图 Fast v0.2 实验入口**：运行 `scripts/fast_cable_route.py`，支持圆形站点候选、PDF 直接矢量线段、带编号的几何叠加图和待核对 Excel。详见 [Ubuntu Fast 使用说明](docs/fast-cable-route-ubuntu.md)。本功能不覆盖下文 macOS Audit 主链路，也不自动确认工程事实。
+> **Ubuntu / NVIDIA CUDA 光缆路由图 Fast v0.3 实验入口**：运行 `scripts/fast_cable_route.py`，支持圆形站点、PDF 直连矢量线段、`--node-names qwen` 局部站名识别及冲突核对，生成 `review-with-nodes.html` 和候选 Excel。详见 [Ubuntu Fast 使用说明](docs/fast-cable-route-ubuntu.md)。本功能不覆盖下文 macOS Audit 主链路，也不自动确认工程事实。
 
 **本地离线 · 证据可追溯 · 候选抽取 + 人工复核**
 
