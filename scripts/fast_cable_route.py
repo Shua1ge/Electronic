@@ -23,7 +23,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-VERSION = "fast-cable-route-0.2"
+VERSION = "fast-cable-route-0.3"
 MODEL_DEFAULT = "Qwen/Qwen3.5-2B"
 PROMPT = """你正在读取电力通信工程《光缆路由图》的一块局部图像。
 只提取两个站点都在本块图内、可以沿可见线条追踪至圆形端点的直接光缆。不要连接跨越图块边界的线路。
@@ -506,6 +506,10 @@ def make_parser() -> argparse.ArgumentParser:
                         help="填写过的geometry/station_anchors.csv，映射人工确认站名到节点")
     parser.add_argument("--geometry-only", action="store_true",
                         help="只生成几何叠加图、站点节点映射与空的复核工作簿，不加载Qwen")
+    parser.add_argument("--node-names", choices=["off", "ocr", "qwen"], default="off",
+                        help="站名与圆形节点候选匹配；qwen 使用本地模型，ocr 仅 OCR")
+    parser.add_argument("--name-max-nodes", type=int, default=40,
+                        help="最多识别的圆形节点数量")
     return parser
 
 
@@ -605,6 +609,17 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         writer.writerows(tabular(rows))
     export_xlsx(out, rows, ocr, manifest)
     export_html(out, rows, manifest)
+    if args.node_names != "off":
+        if args.geometry == "off":
+            raise ValueError("--node-names 需要启用 --geometry auto")
+        from station_node_linker import run as link_station_names
+        selected_mode = args.node_names if engine is not None else "ocr"
+        if args.node_names == "qwen" and engine is None:
+            print("无模型推理模式：节点站名识别回退到 OCR", flush=True)
+        node_result = link_station_names(pdf, out, mode=selected_mode,
+            max_nodes=args.name_max_nodes, existing_backend=engine,
+            lang=args.ocr_lang, online=args.online, model_id=args.model_id)
+        print("新节点复核页面:", node_result["result_html"], flush=True)
     print(f"\n候选 {len(rows)} 条，未解决项 {len(unresolved)} 条")
     print(f"Excel: {out / 'structured.xlsx'}")
     print(f"核对页: {out / 'review.html'}")
