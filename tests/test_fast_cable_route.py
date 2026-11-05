@@ -172,10 +172,10 @@ class GeometryTests(unittest.TestCase):
             pdf=root/"diagram.pdf"
             doc=pymupdf.open()
             page=doc.new_page(width=400,height=250)
-            for x in (80,290):
-                page.draw_circle((x,80),7)
-                page.draw_circle((x,80),5)
-            page.draw_line((87,80),(283,80))
+            for x in (80,210):
+                for radius in (4, 6, 9):
+                    page.draw_circle((x,80),radius,color=(.77,.77,.77),width=.35)
+            page.draw_line((89,80),(201,80),color=(.8,.8,.8),width=.35)
             doc.save(pdf)
             doc.close()
             output=root/"out"
@@ -185,6 +185,9 @@ class GeometryTests(unittest.TestCase):
             self.assertEqual(report["records"],[])
             self.assertTrue((output/"geometry/page001_overlay.png").exists())
             self.assertTrue((output/"geometry/station_anchors.csv").exists())
+            graph=json.loads((output/"geometry/geometry.json").read_text())
+            self.assertGreaterEqual(len(graph["pages"][0]["nodes"]),2)
+            self.assertGreaterEqual(len(graph["pages"][0]["edges"]),1)
             self.assertEqual(report["manifest"]["generation_mode"],"geometry-only")
 
 
