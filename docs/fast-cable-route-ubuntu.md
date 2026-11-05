@@ -1,4 +1,4 @@
-# Fast 光缆路由图候选抽取 v0.2（Ubuntu + NVIDIA CUDA）
+# Fast 光缆路由图候选抽取 v0.3（Ubuntu + NVIDIA CUDA）
 
 这个脚本是 `Electronic` 原工程的**独立实验入口**，不替换 macOS/MLX Audit 流程；支持用本地 Qwen3.5-2B 4-bit 逐切片生成光缆候选，以及基于圆形站点和 PDF 矢量线段的**保守几何核验**。该功能不是通用 CAD 拓扑求解器。
 
@@ -12,11 +12,31 @@ python -m pip install pymupdf pillow openpyxl numpy opencv-python-headless
 sudo apt update
 sudo apt install -y tesseract-ocr tesseract-ocr-chi-sim
 # 先退出常驻 qwen 聊天进程，释放显存
-cd ~/Electronic
-python scripts/fast_cable_route.py ~/文档/03.pdf --output ~/fast-cable-03-v02
+cd ~/Electronic-fast-v03
+python scripts/fast_cable_route.py ~/文档/03.pdf --output ~/fast-cable-03-v03 --node-names qwen
 ```
 
 默认复用本地缓存模型；若模型尚未缓存，需 Hugging Face 网络连通并添加 `--online`。不要在未确认环境兼容性时重装 PyTorch。`--model-id Qwen/Qwen3.5-4B` 可切换为 4B 进行另一次实验，需新的输出目录。
+
+## v0.3 站名—圆形节点自动候选绑定
+
+**此版本已直接集成在主入口中，新的 Git Clone 不需要下载旧 ZIP，也不需要再运行 `enable_node_names.py` 打补丁。**
+
+- `--node-names qwen`：六块图纸候选抽取后，复用当前已加载的 Qwen3.5-2B，对每个圆形节点单独高清裁剪、识别邻近站名，结合 OCR 产生多个读法及模糊字提示。
+- `--node-names ocr`：相同的节点截图、OCR 与候选匹配，但不额外调用节点 Qwen；可降低耗时。
+- `--node-names off`（默认）：保留旧版行为。额外模型调用可能较慢，所以新功能暂不默认开启。
+
+**请优先打开新生成的 `review-with-nodes.html`，而不是仅看 `review.html`。** 前者增加每个圆形节点的裁图、OCR/Qwen 读法、站名匹配建议、实际矢量直线候选检查；后者仍是原始基础候选表。相应新增 `structured-with-nodes.xlsx`、`candidates-with-nodes.json`、`geometry/station_name_candidates.json` 和 `geometry/station_name_crops/`。原始输出不会覆盖。
+
+```bash
+xdg-open ~/fast-cable-03-v03/review-with-nodes.html
+# 如只想测试节点截图与识别（不重新执行六块图纸 VLM）：
+python scripts/station_node_linker.py ~/文档/03.pdf ~/fast-cable-03-v02 --mode qwen
+# 无 GPU 端到端入口（仅几何和站名 OCR，不运行 VLM）：
+python scripts/fast_cable_route.py ~/文档/03.pdf --output ~/fast-geo-03-v03 --geometry-only --node-names ocr --ocr none
+```
+
+“自动匹配成功”只是**尚未签认的名称和几何候选**，不会偷偷把“李家垠”改成“李家垸”，也不会自动认定芯数/长度属于该连接。对于粗黑线、多段折线和遮挡，缺少检测结果仍需复核。
 
 ## 先单独检查几何效果（不启动 Qwen）
 
@@ -32,9 +52,9 @@ xdg-open ~/fast-geo-03/geometry/page001_overlay.png
 - `geometry/page001_overlay.png`：一页几何叠加图（多页图纸每页一张）；
 - `geometry/station_anchors.csv`：节点编号、位置、OCR 附近的文字线索、**人工确认站名**。
 
-## 给圆形节点填入站名，执行端点对照（推荐）
+## 人工站点映射备选方案（不强制）
 
-第一次运行时，程序不能仅凭相邻 OCR 字串就认定圆圈属于哪个站点；因此“几何检查”会显示 **「端点尚未标注到圆形节点」**。这是预期行为，不代表几何模块没运行。
+当不启用 `--node-names` 或打开旧的 `review.html` 时，原来的几何模块不会用 Qwen 读法直接绑定站名，因此会显示 **「端点尚未标注到圆形节点」**。可在新 `review-with-nodes.html` 中查看自动候选绑定；以下人工站点映射用于最终核查，不是每次运行的前置条件。
 
 1. 对照 `geometry/page001_overlay.png`，打开 `geometry/station_anchors.csv`。仅填写 `确认站名` 一列，保留页码和节点 ID，保存为 UTF-8 CSV。字形模糊时留空，不要猜测。
 2. 再使用**新的**输出目录重新运行：
@@ -80,6 +100,7 @@ python scripts/fast_cable_route.py ~/文档/03.pdf \
 
 ```bash
 python -m unittest discover -s tests -p 'test_fast_cable_route.py' -v
+python -m unittest discover -s tests -p 'test_station_node_linker.py' -v
 ```
 
 该测试使用合成输入，不包含用户真实工程 PDF。实际案例 `03.pdf` 的试跑数据仅在本地留存，不能作为独立准确率基准。
