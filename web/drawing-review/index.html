@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>工程图纸复核</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header><div class="brand"><span class="logo">↗</span><div><strong>工程图纸复核</strong><small>原图定位 · 连接修正 · 一次导出</small></div></div><div class="documents"><label for="project">图纸</label><select id="project"></select><label for="page">页码</label><select id="page"></select></div><button id="export" class="primary">导出 Excel ↗</button></header>
+<div class="summary"><span id="drawingKind"></span><span id="counts"></span><span id="revision"></span><span id="notice" role="status">正在加载…</span></div>
+<main>
+<section class="drawing"><div class="toolbar"><button id="fit">全图</button><button id="focus">定位选中</button><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="缩小">－</button><span class="divider"></span><label><input type="checkbox" id="showObjects" checked>对象</label><label><input type="checkbox" id="showConnections">其他连接</label><label><input type="checkbox" id="showPaths">待补路径</label></div>
+<div id="canvasWrap"><svg id="canvas" aria-label="工程原图与连接" tabindex="0"><image id="pageImage"/><g id="pathLayer"></g><g id="objectLayer"></g><g id="selectionLayer"></g></svg><div id="mapHint">滚轮缩放 · 拖动平移 · 点击对象或路径查看</div><div id="pickHint" hidden></div></div><div class="drawingFooter"><span><i class="dot cyan"></i>候选路径</span><span><i class="dot red"></i>当前选中</span><span><i class="dot amber"></i>待补路径</span><span id="sourceName"></span></div></section>
+<section class="workspace"><div class="tabs"><button data-tab="connections" class="active">连接记录 <span id="connCount"></span></button><button data-tab="objects">对象与端口 <span id="objectCount"></span></button><button data-tab="paths">待补路径 <span id="pathCount"></span></button></div>
+<div class="filters"><input id="search" placeholder="搜索名称、端口、参数…" aria-label="搜索"><select id="statusFilter" aria-label="状态筛选"><option value="all">全部状态</option><option value="attention">优先检查</option><option value="candidate">候选</option><option value="corrected">已修改</option><option value="approved">已确认</option><option value="rejected">已排除</option></select></div>
+<div class="listActions"><button id="newConnection">＋补充连接</button><button id="newObject">＋补充端点</button><span class="spacer"></span><button id="approve">确认所选</button><button id="reject">排除所选</button></div>
+<div class="tableWrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table><div id="empty" hidden>没有符合条件的记录</div></div>
+<section id="editor"><div class="editorTitle"><strong id="editorTitle">选择记录，查看对应原图</strong><button id="cancelPick" hidden>取消选点</button></div><div id="editorBody"><p class="muted">先检查连接端点和路径；需要时再展开局部证据。对象名称修改会同步到关联记录。</p></div></section>
+</section></main><script src="/app.js"></script></body></html>

@@ -234,10 +234,10 @@ class CudaQwen:
         self.max_new_tokens = max_new_tokens
         self.seed = seed
 
-    def infer(self, image: Path, index: int) -> dict[str, Any]:
+    def infer(self, image: Path, index: int, prompt: str | None = None) -> dict[str, Any]:
         torch = self.torch
         msgs = [{"role": "user", "content": [
-            {"type": "image", "path": str(image.resolve())}, {"type": "text", "text": PROMPT}]}]
+            {"type": "image", "path": str(image.resolve())}, {"type": "text", "text": prompt or PROMPT}]}]
         inputs = self.processor.apply_chat_template(
             msgs, tokenize=True, add_generation_prompt=True,
             return_dict=True, return_tensors="pt", enable_thinking=False,

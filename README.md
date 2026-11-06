@@ -163,3 +163,7 @@ make test
 ## 10. 使用与许可
 
 本仓库用于技术交流与原型验证。如需商用或二次开发，请联系作者确认许可与合规要求。
+
+## Ubuntu 统一图纸复核
+
+光缆路由、设备连接和柜内配线可使用新的 `scripts/drawing_pipeline.py`；提供本机图表联动编辑、修改留痕和 Excel 导出。运行方法及边界见 [统一图纸复核说明](docs/unified-drawing-review.md)。
