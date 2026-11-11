@@ -1,0 +1,8 @@
+# Install CUDA-enabled torch/torchvision separately, as described in docs/document-eval.md.
+# Do not install the macOS/MLX pyproject dependencies on Ubuntu.
+-r requirements-annotation.txt
+transformers==5.20.2
+accelerate==1.15.0
+bitsandbytes==0.50.2
+huggingface-hub>=1.0,<2
+safetensors>=0.4,<1

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>工程文档人工标注</title><link rel="stylesheet" href="/style.css"></head>
+<body>
+<header><div><strong>工程文档人工标注</strong><small id="documentName">正在加载…</small></div><div class="header-actions"><label>标注人<input id="actor" placeholder="填写姓名或代号" maxlength="120"></label><button id="save">保存</button><button id="backup">下载草稿</button><select id="condition" aria-label="导出实验条件"><option value="A">A · 目标区域</option><option value="B">B · 同页上下文</option><option value="C">C · 人选文档上下文</option></select><button id="export" class="primary">导出评测集</button></div></header>
+<div class="statusbar"><span id="progress"></span><span id="revision"></span><span id="notice" role="status" aria-live="polite">独立人工标注，不加载模型答案</span></div>
+<main>
+<aside><label>物理 PDF 页码<select id="page"></select></label><div class="section-heading">本页区域</div><div id="regionList"></div><div class="section-heading">全部区域</div><div id="allRegions"></div></aside>
+<section class="drawing">
+<div class="toolbar"><button id="fit">全页</button><button id="focus">定位区域</button><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="缩小">－</button><button id="rotateLeft">向左旋转</button><button id="rotateRight">向右旋转</button><button id="undo">撤销</button><button id="redo">重做</button></div>
+<div class="toolbar"><label>新区域类型<select id="newType"><option value="text">文字 / 说明 / 图例</option><option value="table">表格</option><option value="diagram">图纸 / 子图</option></select></label><button data-mode="region">框选区域</button><button data-mode="object">框选对象</button><button data-mode="connection">添加连接</button><button data-mode="path">描线路径</button><button data-mode="evidence">框选证据</button><button id="finishPath" hidden>完成路径</button><button id="cancelMode">选择 / 平移</button></div>
+<div id="canvasWrap"><svg id="canvas" aria-label="PDF原图及人工标注"><g id="pageLayer"><image id="pageImage"/><g id="regionsLayer"></g><g id="edgesLayer"></g><g id="objectsLayer"></g><g id="evidenceLayer"></g><g id="draftLayer"></g></g></svg><div id="hint">滚轮缩放 · 拖动平移 · 从“框选区域”开始</div></div>
+<div class="drawing-footer"><span>所有框均映射到默认 PDF 旋转后的整页坐标</span><span id="imageStatus"></span></div>
+</section>
+<section class="workspace"><div id="editor"></div><div id="exportResult" role="status"></div></section>
+</main>
+<script src="/app.js"></script></body></html>
