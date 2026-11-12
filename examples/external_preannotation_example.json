@@ -1,0 +1,35 @@
+{
+  "schema_version": "electronic-preannotation-v1",
+  "model": "external-vision-model-name",
+  "document_id": "D03",
+  "regions": [
+    {
+      "page": 1,
+      "bbox": [0.10, 0.10, 0.90, 0.80],
+      "type": "diagram",
+      "title": "示例光缆局部图（请替换成真实模型输出）",
+      "bbox_space": "region",
+      "data": {
+        "region_role": "main_diagram",
+        "objects": [
+          {"id": "N1", "kind": "station", "name": "示例甲站", "bbox": [0.10, 0.30, 0.15, 0.37]},
+          {"id": "N2", "kind": "station", "name": "示例乙站", "bbox": [0.73, 0.30, 0.78, 0.37]}
+        ],
+        "connections": [
+          {
+            "id": "E1",
+            "source": "N1",
+            "target": "N2",
+            "relation": "cable",
+            "directed": false,
+            "attributes": {
+              "cable_type": {"value": "OPGW", "raw": "OPGW"},
+              "cores": {"value": 24, "raw": "24芯"},
+              "length": {"value": 11.3, "unit": "km", "raw": "11.3km"}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
